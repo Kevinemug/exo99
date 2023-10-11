@@ -1,45 +1,87 @@
-// src/Tenzies.jsx
-import React, { useState } from 'react';
-import '../tenzies.css'
+import React from "react"
+import Die from "./Die"
+import {nanoid} from "nanoid"
+import Modal from "./Modal"
+export default function App() {
 
-const Tenzies = () => {
-  const [numbers, setNumbers] = useState(Array.from({ length: 10 }, (_, i) => i + 1));
-  const [selectedNumber, setSelectedNumber] = useState(null);
-  const [randomNumber, setRandomNumber] = useState(null);
+    const [dice, setDice] = React.useState(allNewDice())
+    const [tenzies, setTenzies] = React.useState(false)
+    
+    React.useEffect(() => {
+        const allHeld = dice.every(die => die.isHeld)
+        const firstValue = dice[0].value
+        const allSameValue = dice.every(die => die.value === firstValue)
+        if (allHeld && allSameValue) {
+            setTenzies(true)
+        }
+    }, [dice])
 
-  const shuffleNumbers = () => {
-    setNumbers(numbers.sort(() => Math.random() - 0.5));
-  };
-
-  const handleNumberClick = (number) => {
-    setSelectedNumber(number);
-  };
-
-  const handleRollClick = () => {
-    const rolledNumber = Math.floor(Math.random() * 10) + 1;
-    setRandomNumber(rolledNumber);
-    if (rolledNumber === selectedNumber) {
-      alert('Congratulations! You selected the correct number!');
-    } else {
-      alert('Try again!');
+    function generateNewDie() {
+        return {
+            value: Math.ceil(Math.random() * 6),
+            isHeld: false,
+            id: nanoid()
+        }
     }
-  };
+    
+    function allNewDice() {
+        const newDice = []
+        for (let i = 0; i < 10; i++) {
+            newDice.push(generateNewDie())
+        }
+        return newDice
+    }
+    const closeModal = () => {
+        setTenzies(false);
+        setDice(allNewDice());
+      }
+    
+    function rollDice() {
+        if(!tenzies) {
+            setDice(oldDice => oldDice.map(die => {
+                return die.isHeld ? 
+                    die :
+                    generateNewDie()
+            }))
+        } else {
+            setTenzies(false)
+            setDice(allNewDice())
+        }
+    }
+    
+    function holdDice(id) {
+        setDice(oldDice => oldDice.map(die => {
+            return die.id === id ? 
+                {...die, isHeld: !die.isHeld} :
+                die
+        }))
+    }
+    
+    const diceElements = dice.map(die => (
+        <Die 
+            key={die.id} 
+            value={die.value} 
+            isHeld={die.isHeld} 
+            holdDice={() => holdDice(die.id)}
+        />
+    ))
+    
+    return (
+        <main>
+ {tenzies && <Modal isActive={tenzies} onClose={closeModal} />}   
+          <h1 className="title">Tenzies</h1>
+            <p className="instructions">Roll until all dice are the same. 
+            Click each die to freeze it at its current value between rolls.</p>
+            <div className="dice-container">
+                {diceElements}
+            </div>
+            <button 
+                className="roll-dice" 
+                onClick={rollDice}
+            >
+                {tenzies ? "New Game" : "Roll"}
+            </button>
 
-  return (
-    <div className='Tenzies'>
-      <h1>Tenzies Game</h1>
-      <div className='numbers'>
-        {numbers.map((number) => (
-          <button key={number} onClick={() => handleNumberClick(number)}>
-            {number}
-          </button>
-        ))}
-      </div>
-      <button onClick={shuffleNumbers}>Shuffle Numbers</button>
-      <button onClick={handleRollClick}>Roll</button>
-      {randomNumber && <p>Random Number: {randomNumber}</p>}
-    </div>
-  );
-};
-
-export default Tenzies;
+        </main>
+    )
+}
