@@ -44,7 +44,7 @@ button:focus {
 
 .new-note {
   cursor: pointer;
-  background-color: #4A4E74;
+  background-color: dodgerblue;
   border: none;
   color: white;
   border-radius: 3px;
@@ -54,7 +54,7 @@ button:focus {
 
 .first-note {
   cursor: pointer;
-  background-color: #4A4E74;
+  background-color: dodgerblue;
   border: none;
   color: white;
   border-radius: 3px;
@@ -95,14 +95,14 @@ button:focus {
   font-size: 0.8rem;
   font-weight: 400;
   line-height: 1.2rem;
-  color: #4A4E74;
+  color: dodgerblue;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .selected-note {
-  background-color: #4A4E74;
+  background-color: dodgerblue;
 }
 
 .selected-note .text-snippet {

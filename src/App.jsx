@@ -3,28 +3,17 @@ import Editor from "./components/Editor"
 import Sidebar from './components/Sidebar'
 import Split from 'react-split';
 import {nanoid} from "nanoid"
-//react mde  style
 import "react-mde/lib/styles/css/react-mde-all.css";
 
 
 export default function App() {
-  //lazy state initialization (retrieve notes from local storage)
   const [notes, setNotes] = useState( () => JSON.parse(localStorage.getItem("notes")) || []);
-
-  // check if notes[0] exists Before getting notes[0].id
   const [curNoteId, setCurNoteId] = useState((notes[0]  && notes[0].id) || "");
-
-
-
-//Store note in window local storage
-
   useEffect(()=>{
     localStorage.setItem("notes",  JSON.stringify(notes))
 
   },[notes])
 
-
-// Move  updated/modified note to the top 
 const updateNote =(text)=>{
   setNotes(oldNotes =>{
   let updatedArr = [];
@@ -40,28 +29,21 @@ const updateNote =(text)=>{
   })
 }
 
-
-//Delete note
 function deleteNote(event, noteId){
-  // prevents the propagation of an event to its parent elements 
   event.stopPropagation();
   setNotes(notes => notes.filter((note)=>(note.id !== noteId)) )
 
 }
 
-
-  // Create a new note 
   const createNewNote = ()=>{
     const newNote ={
       id: nanoid(),
-      body:"# Type your markdown note title here"
+      body:"# New note title",
     }
     setNotes(prevNotes => [newNote , ...prevNotes]);
     setCurNoteId(newNote.id)
   }
 
-
-  //find curremt note
   function findCurrentNote (){
     return notes.find(note=>{
       return note.id === curNoteId }) || notes[0] ;
@@ -95,9 +77,9 @@ deleteNote={deleteNote}
 :
       
 <div className="no-notes">
-<h1>You have no notes</h1>
+<h1>Opps!! your mark down is empty</h1>
 <button className="first-note" onClick={createNewNote}>
-    Create one now
+    Add notes
 </button>
 </div>
       
