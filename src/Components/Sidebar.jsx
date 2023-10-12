@@ -29,7 +29,7 @@ export default function({newNote, notes, currentNote, setCurNoteId, deleteNote})
         <aside className="sidebar pane">
             <div>
             <div className="sidebar__header">
-                <button className="sidebar__new-note" onClick={newNote}>+   New Note</button>
+                <button className="sidebar__new-note" onClick={newNote}>+ New Note</button>
             </div>
             {noteElements.length ? noteElements : "loading..."}
            </div>
